@@ -27,12 +27,7 @@ SECRET_KEY = 'django-insecure-!42&3=!6h6ijtj1vbv&960udpcm5uz@$auk_i8s*$vhr_yyq8&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-]
-
+ALLOWED_HOSTS=['*']
 
 # Application definition
 
@@ -46,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'django_filters',
+    'oauth2_provider',
     'corsheaders',
     'product',
     'register',
@@ -165,6 +161,7 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+         'rest_framework.permissions.IsAuthenticated',  
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -174,6 +171,22 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    ],
+    'DEFAULT_PARSER_CLASSES': [ 
+        'rest_framework.parsers.JSONParser'
     ],
 }
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
